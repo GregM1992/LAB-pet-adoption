@@ -241,85 +241,63 @@ const pets = [
     }
   ];
 
-const petCard = document.querySelector("#pet-card");
-let domString = " ";
- for (const pet of pets){
-  domString += `<div id="pet-card">
-  <div class="card" style="width: 18rem;">
-    <img src=${pet.imageUrl} class=${pet.name} alt=${pet.name}>
-    <div class="${pet.type}">
-      <h5 class="card-title">${pet.name}</h5>
-      <p class="card-text">${pet.specialSkill}</p>
-    </div>
-  </div>`
- }
- petCard.innerHTML = domString
+  const renderToDom = (divId, html) => {
+    const targetedDiv = document.querySelector(divId);
+    targetedDiv.innerHTML = html;
+  };
 
+  const cardsOnDom = (array) => {
 
-
-const renderToDom = (divId, htmlToRender) =>{
-  const targetedDiv = document.querySelector(divId)
-  targetedDiv.innerHTML = htmlToRender
-};
-
-
-
-const cardsOnDom = (array) => {
-  let domString = " ";
- for (const pet of array){
-  domString += `<div id="pet-card">
-  <div class="card" style="width: 18rem;">
-    <img src=${pet.imageUrl} class=${pet.name} alt=${pet.name}>
-    <div class="${pet.type}">
-      <h5 class="card-title">${pet.name}</h5>
-      <p class="card-text">${pet.specialSkill}</p>
-    </div>
-  </div>`
-}
-renderToDom("#pet-card",domString);
-}
-
-
-const filterCats = (pets, petType) => {
-  const catArray = [];
-  for (const pet of pets) {
-    if (pet.type === petType){
-      catArray.push(pet)
+    let domString = "";
+    
+    for(const pet of array){
+      
+      domString += 
+      `
+      <div class="card" style="width: 18rem;">
+        <div class="card-header">
+          <h5 class="card-title">${pet.name}</h5>
+        </div>
+        <img src="${pet.imageUrl}" class="card-img-top" alt="${pet.name}">
+        <div class="card-body">
+          <p class="card-text">${pet.color}</p>
+          <p class="card-text">${pet.specialSkill}</p>
+          <div class="card-footer">
+            <p class="card-text">${pet.type}</p>
+          </div>
+        </div>
+      </div>
+      `
     }
-  }
-  return catArray
-};
-const filterDogs = (pets, petType) => {
-  const dogArray = [];
-  for (const pet of pets) {
-    if (pet.type === petType){
-      dogArray.push(pet)
-    }
-  }
-  return dogArray
-}
-const filterDinos = (pets, petType) => {
-  const dinoArray = [];
-  for (const pet of pets) {
-    if (pet.type === petType){
-      dinoArray.push(pet)
-    }
-  }
-  return dinoArray
-}
-const showAll = document.getElementById('all-btn')
-const showCats = document.getElementById('#cat-btn');
-const showDogs = document.getElementById('#dog-btn');
-const showDinos = document.getElementById('#dino-btn');
 
-showAll.addEventListener("click",() => {
-  cardsOnDom(pets)
-})
+    renderToDom('#pet-card', domString);
+  };
 
-showCats.addEventListener("click", () =>{
-  cats = filterCats(pets, petType);
-  cardsOnDom(cats)
-}
-)
-  
- 
+  cardsOnDom(pets);
+
+  const filterContainer = document.querySelector('#group');
+  const filterAnimalByType = (animal) => {
+    const filteredPets = pets.filter((pet) => pet.type === animal)
+    cardsOnDom(filteredPets);
+  }
+
+  filterContainer.addEventListener('click', (e) => {
+    
+    switch (e.target.id) {
+      case 'cat-btn':
+        filterAnimalByType('cat');
+        break;
+
+      case 'dog-btn':
+        filterAnimalByType('dog');        
+        break;
+      
+      case 'dino-btn':
+        filterAnimalByType('dino');
+        break;
+    
+      default:
+        cardsOnDom(pets);
+        break;
+    }
+  })
