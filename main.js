@@ -254,3 +254,72 @@ let domString = " ";
   </div>`
  }
  petCard.innerHTML = domString
+
+
+
+const renderToDom = (divId, htmlToRender) =>{
+  const targetedDiv = document.querySelector(divId)
+  targetedDiv.innerHTML = htmlToRender
+};
+
+
+
+const cardsOnDom = (array) => {
+  let domString = " ";
+ for (const pet of array){
+  domString += `<div id="pet-card">
+  <div class="card" style="width: 18rem;">
+    <img src=${pet.imageUrl} class=${pet.name} alt=${pet.name}>
+    <div class="${pet.type}">
+      <h5 class="card-title">${pet.name}</h5>
+      <p class="card-text">${pet.specialSkill}</p>
+    </div>
+  </div>`
+}
+renderToDom("#pet-card",domString);
+}
+
+
+const filterCats = (pets, petType) => {
+  const catArray = [];
+  for (const pet of pets) {
+    if (pet.type === petType){
+      catArray.push(pet)
+    }
+  }
+  return catArray
+};
+const filterDogs = (pets, petType) => {
+  const dogArray = [];
+  for (const pet of pets) {
+    if (pet.type === petType){
+      dogArray.push(pet)
+    }
+  }
+  return dogArray
+}
+const filterDinos = (pets, petType) => {
+  const dinoArray = [];
+  for (const pet of pets) {
+    if (pet.type === petType){
+      dinoArray.push(pet)
+    }
+  }
+  return dinoArray
+}
+const showAll = document.getElementById('all-btn')
+const showCats = document.getElementById('#cat-btn');
+const showDogs = document.getElementById('#dog-btn');
+const showDinos = document.getElementById('#dino-btn');
+
+showAll.addEventListener("click",() => {
+  cardsOnDom(pets)
+})
+
+showCats.addEventListener("click", () =>{
+  cats = filterCats(pets, petType);
+  cardsOnDom(cats)
+}
+)
+  
+ 
