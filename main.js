@@ -241,85 +241,130 @@ const pets = [
     }
   ];
 
-const petCard = document.querySelector("#pet-card");
-let domString = " ";
- for (const pet of pets){
-  domString += `<div id="pet-card">
-  <div class="card" style="width: 18rem;">
-    <img src=${pet.imageUrl} class=${pet.name} alt=${pet.name}>
-    <div class="${pet.type}">
-      <h5 class="card-title">${pet.name}</h5>
-      <p class="card-text">${pet.specialSkill}</p>
-    </div>
-  </div>`
- }
- petCard.innerHTML = domString
+  const renderToDom = (divId, html) => {
+    const targetedDiv = document.querySelector(divId);
+    targetedDiv.innerHTML = html;
+  };
 
+  const cardsOnDom = (array) => {
 
-
-const renderToDom = (divId, htmlToRender) =>{
-  const targetedDiv = document.querySelector(divId)
-  targetedDiv.innerHTML = htmlToRender
-};
-
-
-
-const cardsOnDom = (array) => {
-  let domString = " ";
- for (const pet of array){
-  domString += `<div id="pet-card">
-  <div class="card" style="width: 18rem;">
-    <img src=${pet.imageUrl} class=${pet.name} alt=${pet.name}>
-    <div class="${pet.type}">
-      <h5 class="card-title">${pet.name}</h5>
-      <p class="card-text">${pet.specialSkill}</p>
-    </div>
-  </div>`
-}
-renderToDom("#pet-card",domString);
-}
-
-
-const filterCats = (pets, petType) => {
-  const catArray = [];
-  for (const pet of pets) {
-    if (pet.type === petType){
-      catArray.push(pet)
+    let domString = "";
+    
+    for(const pet of array){
+      
+      domString += 
+      `
+      <div class="card" style="width: 18rem;">
+        <div class="card-header">
+          <h5 class="card-title">${pet.name}</h5>
+        </div>
+        <img src="${pet.imageUrl}" class="card-img-top" alt="${pet.name}">
+        <div class="card-body">
+          <p class="card-text">${pet.color}</p>
+          <p class="card-text">${pet.specialSkill}</p>
+          <div class="card-footer">
+            <p class="card-text">${pet.type}</p>
+          </div>
+        </div>
+      </div>
+      `
     }
-  }
-  return catArray
-};
-const filterDogs = (pets, petType) => {
-  const dogArray = [];
-  for (const pet of pets) {
-    if (pet.type === petType){
-      dogArray.push(pet)
-    }
-  }
-  return dogArray
-}
-const filterDinos = (pets, petType) => {
-  const dinoArray = [];
-  for (const pet of pets) {
-    if (pet.type === petType){
-      dinoArray.push(pet)
-    }
-  }
-  return dinoArray
-}
-const showAll = document.getElementById('all-btn')
-const showCats = document.getElementById('#cat-btn');
-const showDogs = document.getElementById('#dog-btn');
-const showDinos = document.getElementById('#dino-btn');
 
-showAll.addEventListener("click",() => {
-  cardsOnDom(pets)
-})
+    renderToDom('#pet-card', domString);
+  };
 
-showCats.addEventListener("click", () =>{
-  cats = filterCats(pets, petType);
-  cardsOnDom(cats)
-}
-)
-  
+  cardsOnDom(pets);
+
+  const filterContainer = document.querySelector('#group');
+  const filterAnimalByType = (animal) => {
+    const filteredPets = pets.filter((pet) => pet.type === animal)
+    cardsOnDom(filteredPets);
+  }
+
+  filterContainer.addEventListener('click', (e) => {
+    
+    switch (e.target.id) {
+      case 'cat-btn':
+        filterAnimalByType('cat');
+        break;
+
+      case 'dog-btn':
+        filterAnimalByType('dog');        
+        break;
+      
+      case 'dino-btn':
+        filterAnimalByType('dino');
+        break;
+    
+      default:
+        cardsOnDom(pets);
+        break;
+    }
+    })
+ 
+const form = document.querySelector("form")
+const showForm = document.querySelector("#show-form")
+
+showForm.addEventListener('click',(e) => {
+  formOnDom()
+}); //listens to click so it renders the form on dom
+
+ const submitBtn = document.querySelector("#submit-btn")
+const formOnDom = () => {
+  let domString = ""
+      domString += `
+          <div class="mb-3">
+            <label for="pet-name" class="form-label">Pet Name:</label>
+            <input type="text"
+             class="form-control" 
+             id="pet-name">
+          </div>
+          <div class="mb-3">
+            <label for="color" class="form-label">Color:</label>
+            <input type="text" 
+            class="form-control" 
+            id="color">
+          </div>
+          <div class="mb-3">
+            <label for="special-skill" class="form-label">Special skill:</label>
+            <input type="text"
+             class="form-control" 
+             id="special-skill">
+          </div>
+          <div class="mb-3">
+            <label for="pet-type" class="form-label">Pet Type:</label>
+            <input type="text" 
+            class="form-control" 
+            id="pet-type">
+          </div>
+          <div class="mb-3">
+            <label for="pet-image" class="form-label">Imgae URL:</label>
+            <input type="text"
+             class="form-control" 
+             id="pet-image">
+          </div>
+          <button type="submit" class="btn btn-primary mb-3">SUBMIT</button>
+`
+          renderToDom("#pet-form", domString) 
+ }//function to render the form on dom
+
+ 
+ const createPet = (e) => {
+  e.preventDefault()
+
+  const newPetObj = {
+    id: pets.length + 1,
+    name: document.querySelector("#pet-name").value,
+    color: document.querySelector("#color").value,
+    specialSkill: document.querySelector("#special-skill").value,
+    type: document.querySelector("#pet-type").value,
+    imageURL:document.querySelector("#pet-image").value
+  }
+  pets.push(newPetObj);
+  cardsOnDom(pets);
+  form.reset();
+ };//creates new object and pushes it to the pets array
+
+form.addEventListener('submit', createPet);
+
  
