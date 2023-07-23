@@ -239,12 +239,15 @@ const pets = [
     type: "dino",
     imageUrl: "http://lsae2.iypcdn.com/static//modules/uploads/photos/language1/dino-live-22.jpg?119"
   }
-];
+]; //an object that contains info on pets
+
+
+//             FUNCTIONS
 
 const renderToDom = (divId, html) => {
   const targetedDiv = document.querySelector(divId);
   targetedDiv.innerHTML = html;
-};
+};// a function that takes an id and html and renders it to the dom
 
 const cardsOnDom = (array) => {
 
@@ -266,22 +269,92 @@ const cardsOnDom = (array) => {
           <p class="card-text">${pet.type}</p>
         </div>
       </div>
+      <button type="button" id="delete--${pet.id}" class="btn btn-danger">Delete</button>
     </div>
     `
   }
 
-  renderToDom('#pet-card', domString);
-};
+  renderToDom('#pet-app', domString);
+};// a function that takes ids from an array and applies it to an html string that renders that to the dom
 
-cardsOnDom(pets);
+const formOnDom = () => {
+  let domString = ""
+      domString += `
+          <div class="mb-3">
+            <label for="pet-name" class="form-label">Pet Name:</label>
+            <input type="text"
+             class="form-control" 
+             id="pet-name">
+          </div>
+          <div class="mb-3">
+            <label for="color" class="form-label">Color:</label>
+            <input type="text" 
+            class="form-control" 
+            id="color">
+          </div>
+          <div class="mb-3">
+            <label for="special-skill" class="form-label">Special skill:</label>
+            <input type="text"
+             class="form-control" 
+             id="special-skill">
+          </div>
+          <div class="mb-3">
+            <label for="pet-type" class="form-label">Pet Type:</label>
+            <input type="text" 
+            class="form-control" 
+            id="pet-type">
+          </div>
+          <div class="mb-3">
+            <label for="pet-image" class="form-label">Imgae URL:</label>
+            <input type="text"
+             class="form-control" 
+             id="pet-image">
+          </div>
+          <button type="submit" class="btn btn-primary mb-3">SUBMIT</button>
+  `
+          renderToDom("#pet-form", domString) 
+  }//function to render the pet submit form on dom
 
-const filterContainer = document.querySelector('#group');
+const createPet = (e) => {
+    e.preventDefault()
+    
+    const newPetObj = {
+      id: pets.length + 1,
+      name: document.querySelector("#pet-name").value,
+      color: document.querySelector("#color").value,
+      specialSkill: document.querySelector("#special-skill").value,
+      type: document.querySelector("#pet-type").value,
+      imageURL:document.querySelector("#pet-image").value
+    }
+    pets.push(newPetObj);
+    cardsOnDom(pets);
+    form.reset();
+    };//function that creates new object from form values and pushes it to the pets array
+
 const filterAnimalByType = (animal) => {
-  const filteredPets = pets.filter((pet) => pet.type === animal)
-  cardsOnDom(filteredPets);
-}
+      const filteredPets = pets.filter((pet) => pet.type === animal)
+      cardsOnDom(filteredPets);
+    }//a function that filters through the pets array checking the pet type against the animal given and then passes that to the cardsOnDom function
 
-filterContainer.addEventListener('click', (e) => {
+
+
+
+//            QUERY SELECTORS
+
+
+const filterButtons = document.querySelector('#filterButtons');
+const form = document.querySelector("form")
+const showForm = document.querySelector("#show-form")
+const submitBtn = document.querySelector("#submit-btn")
+const petApp = document.querySelector("#pet-app")
+
+
+
+
+
+//            EVENT LISTENERS
+
+filterButtons.addEventListener('click', (e) => {
   
   switch (e.target.id) {
     case 'cat-btn':
@@ -300,69 +373,26 @@ filterContainer.addEventListener('click', (e) => {
       cardsOnDom(pets);
       break;
   }
-  })
+})//adds a listener to filter buttons that uses the filterAnimalByType function
 
-const form = document.querySelector("form")
-const showForm = document.querySelector("#show-form")
 
 showForm.addEventListener('click',(e) => {
 formOnDom()
-}); //listens to click so it renders the form on dom
+}); //adds a listener to show forms btn that uses the formOnDom function
 
-const submitBtn = document.querySelector("#submit-btn")
-const formOnDom = () => {
-let domString = ""
-    domString += `
-        <div class="mb-3">
-          <label for="pet-name" class="form-label">Pet Name:</label>
-          <input type="text"
-           class="form-control" 
-           id="pet-name">
-        </div>
-        <div class="mb-3">
-          <label for="color" class="form-label">Color:</label>
-          <input type="text" 
-          class="form-control" 
-          id="color">
-        </div>
-        <div class="mb-3">
-          <label for="special-skill" class="form-label">Special skill:</label>
-          <input type="text"
-           class="form-control" 
-           id="special-skill">
-        </div>
-        <div class="mb-3">
-          <label for="pet-type" class="form-label">Pet Type:</label>
-          <input type="text" 
-          class="form-control" 
-          id="pet-type">
-        </div>
-        <div class="mb-3">
-          <label for="pet-image" class="form-label">Imgae URL:</label>
-          <input type="text"
-           class="form-control" 
-           id="pet-image">
-        </div>
-        <button type="submit" class="btn btn-primary mb-3">SUBMIT</button>
-`
-        renderToDom("#pet-form", domString) 
-}//function to render the form on dom
-
-
-const createPet = (e) => {
-e.preventDefault()
-
-const newPetObj = {
-  id: pets.length + 1,
-  name: document.querySelector("#pet-name").value,
-  color: document.querySelector("#color").value,
-  specialSkill: document.querySelector("#special-skill").value,
-  type: document.querySelector("#pet-type").value,
-  imageURL:document.querySelector("#pet-image").value
-}
-pets.push(newPetObj);
-cardsOnDom(pets);
-form.reset();
-};//creates new object and pushes it to the pets array
 
 form.addEventListener('submit', createPet);
+//adds a listener to the submit button that uses the createPet function
+
+petApp.addEventListener('click',(e) => {
+  if (e.target.id.includes("delete")) {
+    const [, int] = e.target.id.split("--");
+    const index = pets.findIndex((pet) => pet.id === Number(int));
+    pets.splice(index, 1);
+    cardsOnDom(pets)
+  }
+});
+
+//             CALLED FUNCTIONS
+
+cardsOnDom(pets);//calls the function with the pet array as an argument
